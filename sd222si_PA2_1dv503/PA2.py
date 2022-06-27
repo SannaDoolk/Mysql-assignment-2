@@ -27,6 +27,7 @@ def create_database(cursor, DB_NAME):
         print("Faild to create database {}".format(err))
         exit(1)
 
+# Create table for Candy
 def create_candy_table(cursor):
     create_candy = "CREATE TABLE `candy` (" \
                      "  `name` varchar(255) NOT NULL," \
@@ -47,6 +48,7 @@ def create_candy_table(cursor):
     else:
         print("Created table OK")        
 
+# Create table for Candy_eater
 def create_candy_eater_table(cursor):
     create_candy_eater = "CREATE TABLE `candy_eater` (" \
                      "  `name` varchar(255) NOT NULL," \
@@ -68,6 +70,7 @@ def create_candy_eater_table(cursor):
     else:
         print("Created table OK") 
 
+#Create table for Candy_manufacturer
 def create_candy_manufacturer_table(cursor):
     create_candy_manifactures = "CREATE TABLE `candy_manufacturer` (" \
                      "  `name` varchar(255) NOT NULL," \
@@ -87,6 +90,7 @@ def create_candy_manufacturer_table(cursor):
     else:
         print("Created table OK") 
 
+# Insert values to the candy_manufacturer table
 def insert_values_candy_manufacturer(cursor):
   with open("data/candy_manufacturer.csv", "r") as file:
     csv_reader = csv.reader(file, skipinitialspace=False, delimiter=";")
@@ -102,6 +106,7 @@ def insert_values_candy_manufacturer(cursor):
             else:
                 cnx.commit() 
 
+# Insert values to the candy_eater table
 def insert_values_candy_eater(cursor):
   with open("data/candy_eaters.csv", "r") as file:
     csv_reader = csv.reader(file, skipinitialspace=False, delimiter=";")
@@ -117,11 +122,12 @@ def insert_values_candy_eater(cursor):
             else:
                 cnx.commit() 
 
+# Insert values to the candy table
 def insert_values_candy(cursor):
   with open("data/Candy.csv", "r") as file:
     csv_reader = csv.reader(file, skipinitialspace=False, delimiter=";")
     next(csv_reader)
-    for row in csv_reader: #every row
+    for row in csv_reader: 
             try:
                 cursor.execute("""INSERT INTO candy (
                                 name, type, taste, manufacturer)
@@ -132,6 +138,7 @@ def insert_values_candy(cursor):
             else:
                 cnx.commit() 
 
+# Creates the database with the tables and their values
 def create_database_and_tables():
     try:
         cursor.execute("USE {}".format(DB_NAME))
@@ -152,7 +159,6 @@ def create_database_and_tables():
             print(err) 
 
 # Shows number of candy eaters in database per country 
-# Aggregation, grouping - 1 table
 def countries_of_candy_eaters(cursor):
     query = 'SELECT COUNT(id), country FROM candy_eater GROUP BY country'
     cursor.execute(query)
@@ -160,7 +166,7 @@ def countries_of_candy_eaters(cursor):
     for x in result:
         print(x)
 
-#JOIN
+# Queries the name of the candy_eater, their favourite candy and the taste of that candy
 def show_name_favourite_candy_and_taste(cursor):
     query = 'SELECT candy_eater.name, candy_eater.favourite_candy, candy.taste FROM candy_eater INNER JOIN candy ON candy_eater.favourite_candy=candy.name'
     cursor.execute(query)
@@ -168,7 +174,7 @@ def show_name_favourite_candy_and_taste(cursor):
     for x in result:
         print(x)
 
-#JOIN
+# Queries the name of a candy, its manufacturer and the founder of the manufacturer 
 def show_candy_manufacturer_and_funder(cursor):
     candy = input('Enter the name of a candy: ') 
     candy = (candy, )
@@ -178,7 +184,7 @@ def show_candy_manufacturer_and_funder(cursor):
     for x in result:
         print(x)
 
-#JOIN
+# Queries the average age of candy eaters whos favourite candy is of an entered taste
 def taste_of_favourite_candy_average_age(cursor): 
     taste = input('Enter a taste: ')  
     taste = (taste, )
@@ -188,7 +194,7 @@ def taste_of_favourite_candy_average_age(cursor):
     for x in result:
         print(x)
 
-#VIEW
+# Creates a view from the columns name and favourite candy where the candy eaters country is the entered one
 def view_name_and_favourite_candy_by_country(cursor):
     country = input('Enter a country: ') 
     country = (country, )       
@@ -200,6 +206,7 @@ def view_name_and_favourite_candy_by_country(cursor):
     for x in result:
         print(x)
 
+# Shows the names of the manifacturers with a start year before an entered year
 def show_manufacturers_based_on_start_year(cursor):
     year = input('Enter a year: ') 
     year = (year, )
@@ -209,7 +216,7 @@ def show_manufacturers_based_on_start_year(cursor):
     for x in result:
         print(x)   
 
-# Shows the menu 
+# Shows the menu alternatives
 def print_menu_options():
     options = {
         1: '1. Show number of candy eaters in database per country',
@@ -225,6 +232,7 @@ def print_menu_options():
         print (options[key] )
     print('-----------------------------')    
 
+# Lets the user pick an option
 def show_menu(cursor):
     show = True
     while(show):
@@ -261,3 +269,4 @@ def show_menu(cursor):
 create_database_and_tables()
 
 show_menu(cursor)
+
